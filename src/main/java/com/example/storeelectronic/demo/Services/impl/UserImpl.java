@@ -3,8 +3,10 @@ package com.example.storeelectronic.demo.Services.impl;
 import com.example.storeelectronic.demo.Dto.PageableResponse;
 import com.example.storeelectronic.demo.Dto.UserDto;
 import com.example.storeelectronic.demo.Helper.Helper;
+import com.example.storeelectronic.demo.Repository.Rolerepo;
 import com.example.storeelectronic.demo.Repository.UserRepository;
 import com.example.storeelectronic.demo.Services.Userservice;
+import com.example.storeelectronic.demo.entities.Role;
 import com.example.storeelectronic.demo.entities.User;
 import com.example.storeelectronic.demo.exception.ResourceNotFoundException;
 import lombok.Builder;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +31,10 @@ public class UserImpl implements Userservice {
     private UserRepository userRepo;
     @Autowired
     private ModelMapper modelmapper;
+    @Autowired
+    private PasswordEncoder passwordencoer;
+    @Autowired
+    private Rolerepo rolerepo;
 
 
     @Override
@@ -35,6 +42,9 @@ public class UserImpl implements Userservice {
         String userid = UUID.randomUUID().toString();
         userdto.setUserId(userid);
         User x = Userfromdto(userdto);
+        x.setPassword(passwordencoer.encode(x.getPassword()));
+        Role role=this.rolerepo.findByName("ROLE_NORMAL").orElseThrow(()->new ResourceNotFoundException());
+        x.getRoles().add(role);
         User savedUser = userRepo.save(x);
         UserDto USERDTO = this.dtofromentity(savedUser);
         return USERDTO;

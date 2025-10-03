@@ -15,6 +15,7 @@ import com.example.storeelectronic.demo.exception.ResourceNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -23,15 +24,18 @@ import java.util.stream.Collectors;
 public class CartServiceimpl implements CartService {
     @Autowired
     private UserRepository userRepo;
+
     @Autowired
     private ProductRepository productRepo;
+
     @Autowired
     private Cartrepository cartRepo;
+
     @Autowired
     private ModelMapper mapper;
+
     @Autowired
     private CarItemRepository cartItemrepo;
-
 
 
     @Override
@@ -78,7 +82,6 @@ public class CartServiceimpl implements CartService {
         Cart savedcart = this.cartRepo.save(cart);
         return this.mapper.map(savedcart, CartDto.class);
     }
-
 
 
     @Override

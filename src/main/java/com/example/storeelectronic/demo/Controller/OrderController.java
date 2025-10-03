@@ -5,6 +5,7 @@ import com.example.storeelectronic.demo.Dto.OrderDto;
 import com.example.storeelectronic.demo.Services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,6 +16,7 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping("/{userid}/{cartid}/saveorder")
+    @PreAuthorize("hasRole('NORMAL')")
     public ResponseEntity<OrderDto> createOrder(
             @RequestBody Createorderrequest orderDto,
             @PathVariable String userid,
@@ -23,6 +25,7 @@ public class OrderController {
         OrderDto savedOrder = orderService.createorder(orderDto, userid, cartid);
         return ResponseEntity.ok(savedOrder);
     }
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{orderid}")
     public ResponseEntity<String> deleteOrder(
 
